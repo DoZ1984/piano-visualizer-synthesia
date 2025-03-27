@@ -125,9 +125,9 @@ Las teclas negras se mapean a las teclas con números y símbolos.
 |--------|---------|-----------|--------|--------------|
 | Principal | `main.py` | 1 | Pendiente | Todos |
 | Renderizado | `piano_renderer.py` | 2 | ✅ Completado | Ninguna |
-| Parser MIDI | `midi_parser.py` | 2 | En desarrollo | Ninguna |
-| Motor de sonido | `sound_engine.py` | 3 | Pendiente | Ninguna |
-| Componentes UI | `ui_components.py` | 3 | Pendiente | Ninguna |
+| Parser MIDI | `midi_parser.py` | 2 | ✅ Completado | Ninguna |
+| Motor de sonido | `sound_engine.py` | 3 | ✅ Completado | Ninguna |
+| Componentes UI | `ui_components.py` | 3 | En desarrollo | Ninguna |
 
 ## Guía de Desarrollo
 
@@ -142,11 +142,12 @@ Para mantener el proyecto organizado y facilitar su desarrollo con asistentes de
 
 ### Próximos Pasos
 
-1. Completar la implementación del módulo `midi_parser.py`
-2. Implementar el módulo `sound_engine.py`
-3. Desarrollar los componentes de UI básicos
-4. Integrar todos los módulos en `main.py`
-5. Añadir características adicionales (personalización, más opciones de visualización)
+1. Completar la implementación del módulo `ui_components.py`
+2. Implementar el módulo principal `main.py`
+3. Crear estructura de directorios para assets
+4. Añadir archivos MIDI de ejemplo
+5. Realizar pruebas de integración
+6. Añadir características adicionales (personalización, más opciones de visualización)
 
 ## Contribuciones
 
@@ -165,3 +166,5 @@ Las contribuciones son bienvenidas. Por favor, sigue estos pasos:
 | 27/03/2025 | Repositorio | Creación inicial y README | DoZ |
 | 27/03/2025 | piano_renderer.py | Implementación del renderizador de piano | DoZ |
 | 27/03/2025 | README.md | Actualización con especificaciones detalladas | DoZ |
+| 27/03/2025 | midi_parser.py | Implementación del parser MIDI | DoZ |
+| 27/03/2025 | sound_engine.py | Implementación del motor de sonido | DoZ |
