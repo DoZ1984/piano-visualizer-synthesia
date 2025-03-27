@@ -79,6 +79,8 @@ class PianoRenderer:
         self.BLUE = (0, 120, 255)
         self.RED = (255, 50, 50)
         self.GREEN = (50, 255, 50)
+        self.LEFT_HAND_COLOR = (255, 100, 100)  # Color para mano izquierda
+        self.RIGHT_HAND_COLOR = (100, 100, 255)  # Color para mano derecha
         
         # Calcular posiciones de teclas
         self.white_keys, self.black_keys = self._calculate_key_positions()
@@ -157,7 +159,7 @@ class PianoRenderer:
         """
         return self.key_mapping.get(key)
     
-    def draw(self, screen, notes, current_time, speed):
+    def draw(self, screen, notes, current_time, speed, show_hands=True):
         """
         Dibuja el piano y las notas cayendo.
 
@@ -166,35 +168,54 @@ class PianoRenderer:
             notes (list): Lista de objetos Note que contienen información de las notas
             current_time (float): Tiempo actual en milisegundos
             speed (float): Factor de velocidad para la animación
+            show_hands (bool): Si es True, muestra diferentes colores para cada mano
         """
         # Dibujar teclas blancas
         for x, y, note_num in self.white_keys:
             # Verificar si la nota está activa
-            is_active = any(note.note == note_num and 
-                          note.start_time <= current_time * speed <= note.end_time 
-                          for note in notes)
+            active_notes = [note for note in notes if note.note == note_num and 
+                           note.start_time <= current_time * speed <= note.end_time]
             
-            color = self.GREEN if is_active else self.WHITE
+            if active_notes:
+                # Si hay notas activas, usar color según la mano
+                if show_hands and any(note.hand == 'left' for note in active_notes):
+                    color = self.LEFT_HAND_COLOR
+                elif show_hands and any(note.hand == 'right' for note in active_notes):
+                    color = self.RIGHT_HAND_COLOR
+                else:
+                    color = self.GREEN
+            else:
+                color = self.WHITE
+                
             pygame.draw.rect(screen, color, (x, y, self.white_key_width, self.white_key_height))
             pygame.draw.rect(screen, self.BLACK, (x, y, self.white_key_width, self.white_key_height), 1)
         
         # Dibujar notas cayendo para teclas blancas
-        self._draw_falling_notes(screen, notes, current_time, speed, True)
+        self._draw_falling_notes(screen, notes, current_time, speed, True, show_hands)
         
         # Dibujar teclas negras
         for x, y, note_num in self.black_keys:
             # Verificar si la nota está activa
-            is_active = any(note.note == note_num and 
-                          note.start_time <= current_time * speed <= note.end_time 
-                          for note in notes)
+            active_notes = [note for note in notes if note.note == note_num and 
+                           note.start_time <= current_time * speed <= note.end_time]
             
-            color = self.GREEN if is_active else self.BLACK
+            if active_notes:
+                # Si hay notas activas, usar color según la mano
+                if show_hands and any(note.hand == 'left' for note in active_notes):
+                    color = self.LEFT_HAND_COLOR
+                elif show_hands and any(note.hand == 'right' for note in active_notes):
+                    color = self.RIGHT_HAND_COLOR
+                else:
+                    color = self.GREEN
+            else:
+                color = self.BLACK
+                
             pygame.draw.rect(screen, color, (x, y, self.black_key_width, self.black_key_height))
         
         # Dibujar notas cayendo para teclas negras
-        self._draw_falling_notes(screen, notes, current_time, speed, False)
+        self._draw_falling_notes(screen, notes, current_time, speed, False, show_hands)
     
-    def _draw_falling_notes(self, screen, notes, current_time, speed, is_white):
+    def _draw_falling_notes(self, screen, notes, current_time, speed, is_white, show_hands=True):
         """
         Dibuja las notas que caen hacia el piano.
 
@@ -204,6 +225,7 @@ class PianoRenderer:
             current_time (float): Tiempo actual en milisegundos
             speed (float): Factor de velocidad para la animación
             is_white (bool): True para dibujar notas de teclas blancas, False para negras
+            show_hands (bool): Si es True, muestra diferentes colores para cada mano
         """
         # Altura máxima para las notas cayendo
         note_fall_height = self.piano_y - 100
@@ -248,7 +270,17 @@ class PianoRenderer:
                             y_pos = self.piano_y - time_until_hit * fall_speed
                             note_height = min(note.end_time - note.start_time, 200) * fall_speed * 0.5
                             
+                            # Determinar color según la mano
+                            if show_hands and hasattr(note, 'hand'):
+                                if note.hand == 'left':
+                                    color = self.LEFT_HAND_COLOR
+                                elif note.hand == 'right':
+                                    color = self.RIGHT_HAND_COLOR
+                                else:
+                                    color = self.BLUE if is_white else (100, 150, 255)
+                            else:
+                                color = self.BLUE if is_white else (100, 150, 255)
+                            
                             # Dibujar la nota
-                            color = self.BLUE if is_white else (100, 150, 255)
                             pygame.draw.rect(screen, color, (key_position, y_pos - note_height, key_width, note_height))
                             pygame.draw.rect(screen, self.BLACK, (key_position, y_pos - note_height, key_width, note_height), 1)
