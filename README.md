@@ -1,75 +1,49 @@
 # Piano Visualizer (Estilo Synthesia)
 
-## 🚨 LEER PRIMERO: Guía para desarrollar este proyecto con asistencia de IA 🚨
+## Descripción del Proyecto
 
-Este documento proporciona una guía para desarrollar y mantener este proyecto utilizando asistentes de IA como Highlight, considerando las limitaciones técnicas que pueden surgir durante las conversaciones.
+Este proyecto es un visualizador de piano estilo Synthesia desarrollado en Python con Pygame. Permite visualizar y reproducir archivos MIDI mostrando las notas como bloques que caen hacia un teclado virtual, similar al popular software Synthesia.
 
-### Problemática actual
+![Ejemplo Visual](https://i.imgur.com/example.png) <!-- Añadir imagen real cuando esté disponible -->
 
-Al desarrollar proyectos complejos con asistentes de IA, nos enfrentamos a varias limitaciones:
+## Características Principales
 
-1. **Límite de caracteres**: Los chats suelen tener un límite de aproximadamente 20,000-22,000 caracteres por respuesta.
-2. **Inestabilidad en respuestas largas**: Cuando se generan múltiples archivos o archivos grandes, el chat puede fallar.
-3. **Discontinuidad entre sesiones**: Es difícil que el asistente mantenga el contexto completo entre diferentes sesiones.
-4. **Control de versiones fragmentado**: Sin una estrategia adecuada, el código puede volverse inconsistente.
+- **Visualización de teclado completo**: Renderiza un teclado de piano de 5 octavas (desde C2 hasta B6).
+- **Animación de notas**: Las notas se visualizan como bloques de colores que caen hacia el teclado.
+- **Reproducción MIDI**: Carga y reproduce archivos MIDI con sincronización visual.
+- **Diferenciación por manos**: Muestra diferentes colores para notas tocadas con mano izquierda y derecha.
+- **Controles interactivos**: Permite ajustar velocidad, pausar/reanudar y saltar secciones.
+- **Entrada de teclado**: Soporte para tocar notas usando el teclado de la computadora.
 
-### Metodología de desarrollo recomendada
+## Requisitos Técnicos
 
-Para superar estas limitaciones, seguiremos esta metodología:
+- Python 3.7+
+- Pygame 2.0+
+- Mido (para procesamiento de archivos MIDI)
+- NumPy (para procesamiento de audio)
 
-#### 1. Estructura modular con prioridades
+## Instalación
 
-El proyecto está dividido en módulos independientes con prioridades claras:
+```bash
+# Clonar el repositorio
+git clone https://github.com/DoZ1984/piano-visualizer-synthesia.git
+cd piano-visualizer-synthesia
 
-| Módulo | Archivo | Prioridad | Estado | Dependencias |
-|--------|---------|-----------|--------|--------------|
-| Principal | `main.py` | 1 | Pendiente | Todos |
-| Renderizado | `piano_renderer.py` | 2 | Pendiente | Ninguna |
-| Parser MIDI | `midi_parser.py` | 2 | Pendiente | Ninguna |
-| Motor de sonido | `sound_engine.py` | 3 | Pendiente | Ninguna |
-| Componentes UI | `ui_components.py` | 3 | Pendiente | Ninguna |
+# Instalar dependencias
+pip install pygame mido numpy
+```
 
-#### 2. Desarrollo secuencial por módulos
+## Uso
 
-1. **Un módulo por sesión**: Trabaja en un solo módulo en cada sesión de chat.
-2. **Orden de implementación**: Sigue el orden de prioridad establecido.
-3. **Verificación de integridad**: Después de cada módulo, verifica que esté completo y sea funcional de forma independiente.
+```bash
+# Ejecutar con un archivo MIDI
+python main.py path/to/your/midi/file.mid
 
-#### 3. Gestión del repositorio
+# Ejecutar en modo interactivo (solo teclado)
+python main.py --interactive
+```
 
-Cada vez que retomes el proyecto:
-
-1. **Revisar este README**: Para recordar el estado actual y próximos pasos.
-2. **Consultar la tabla de estado**: Para identificar qué módulo implementar a continuación.
-3. **Actualizar el estado**: Después de cada implementación, actualiza la tabla de estado.
-
-#### 4. Estrategia de implementación
-
-Para cada módulo:
-
-1. **Solicitar implementación específica**: "Implementa el módulo X según las especificaciones del proyecto."
-2. **Revisar y corregir**: Verifica el código antes de guardarlo en el repositorio.
-3. **Pruebas unitarias**: Cuando sea posible, incluye pruebas para cada módulo.
-4. **Documentación inline**: Asegúrate de que cada módulo esté bien documentado.
-
-### Plan de implementación detallado
-
-#### Fase 1: Implementación de módulos base
-- Implementar `piano_renderer.py`
-- Implementar `midi_parser.py`
-- Implementar `sound_engine.py`
-- Implementar `ui_components.py`
-
-#### Fase 2: Integración
-- Implementar `main.py` que integra todos los módulos
-- Crear estructura de directorios y archivos auxiliares
-
-#### Fase 3: Pruebas y mejoras
-- Probar la aplicación con archivos MIDI simples
-- Implementar mejoras y correcciones
-- Documentar el uso para usuarios finales
-
-### Estructura del proyecto
+## Estructura del Proyecto
 
 ```
 piano_visualizer/
@@ -87,39 +61,107 @@ piano_visualizer/
 └── songs/             # Archivos MIDI de ejemplo
 ```
 
-### Próximos pasos
+## Especificaciones Técnicas
 
-1. Implementar el módulo `piano_renderer.py`
-2. Actualizar este README con el estado del proyecto
-3. Continuar con el siguiente módulo según la tabla de prioridades
+### Piano Renderer
+- Renderiza un teclado de piano con 88 teclas (estándar)
+- Anima las notas como bloques rectangulares que caen
+- Resalta las teclas cuando son presionadas
+- Usa colores distintos para mano izquierda (rojo) y derecha (azul)
+- Admite zoom y desplazamiento para ver diferentes secciones del teclado
 
-## Especificaciones del proyecto
+### MIDI Parser
+- Carga y analiza archivos MIDI estándar
+- Extrae información de notas, canales, velocidad y tiempo
+- Separa pistas para mano izquierda y derecha (basado en canales o posición de notas)
+- Admite diferentes formatos de archivo MIDI (0, 1 y 2)
+- Procesa información de tempo y cambios de tiempo
 
-### Descripción general
-Este proyecto es un visualizador de piano estilo Synthesia, desarrollado en Python con Pygame. Permite visualizar y tocar notas de piano con animaciones de cascada similares a las del software Synthesia.
+### Sound Engine
+- Reproduce los sonidos de piano correspondientes a cada nota
+- Ajusta el volumen según la velocidad de la nota MIDI
+- Permite silenciar/activar el sonido
+- Soporta diferentes conjuntos de sonidos de piano (samples)
+- Controla la latencia para sincronización precisa
 
-### Características principales
-- Visualización de un teclado de piano
-- Animación de notas cayendo
-- Reproducción de sonidos de piano
-- Soporte para archivos MIDI
-- Interfaz de usuario simple
+### UI Components
+- Barra de control con botones de reproducción, pausa, detención
+- Control deslizante para ajustar velocidad de reproducción
+- Indicador de progreso de la canción
+- Selector de archivos MIDI
+- Opciones de visualización (mostrar/ocultar manos, cambiar colores)
 
-### Requisitos técnicos
-- Python 3.7+
-- Pygame
-- Mido (para archivos MIDI)
-- NumPy (para generación de sonido)
+## Controles del Teclado
 
-### Instalación
-```bash
-pip install pygame mido numpy
+| Tecla | Función |
+|-------|---------|
+| Espacio | Pausar/Reanudar reproducción |
+| Flechas ← → | Ajustar velocidad de reproducción |
+| Flechas ↑ ↓ | Ajustar volumen |
+| ESC | Salir |
+| R | Reiniciar reproducción |
+| + / - | Zoom in/out del teclado |
+| 1-9 | Atajos para diferentes velocidades |
+
+## Controles para tocar el piano
+
+Las teclas del teclado de la computadora están mapeadas para tocar notas:
+
+```
+Fila superior: Q W E R T Y U I...
+              | | | | | | | |
+              C D E F G A B C...
+
+Fila inferior: Z X C V B N M...
+              | | | | | | |
+              C D E F G A B...
 ```
 
----
+Las teclas negras se mapean a las teclas con números y símbolos.
 
-## Registro de cambios
+## Estado de Desarrollo
+
+| Módulo | Archivo | Prioridad | Estado | Dependencias |
+|--------|---------|-----------|--------|--------------|
+| Principal | `main.py` | 1 | Pendiente | Todos |
+| Renderizado | `piano_renderer.py` | 2 | ✅ Completado | Ninguna |
+| Parser MIDI | `midi_parser.py` | 2 | En desarrollo | Ninguna |
+| Motor de sonido | `sound_engine.py` | 3 | Pendiente | Ninguna |
+| Componentes UI | `ui_components.py` | 3 | Pendiente | Ninguna |
+
+## Guía de Desarrollo
+
+### Metodología de desarrollo
+
+Para mantener el proyecto organizado y facilitar su desarrollo con asistentes de IA, seguimos esta metodología:
+
+1. **Desarrollo modular**: Cada componente es independiente y tiene una responsabilidad clara.
+2. **Implementación secuencial**: Seguimos el orden de prioridad establecido en la tabla de estado.
+3. **Pruebas por módulo**: Cada módulo incluye pruebas unitarias básicas.
+4. **Documentación inline**: Todo el código está documentado con docstrings y comentarios claros.
+
+### Próximos Pasos
+
+1. Completar la implementación del módulo `midi_parser.py`
+2. Implementar el módulo `sound_engine.py`
+3. Desarrollar los componentes de UI básicos
+4. Integrar todos los módulos en `main.py`
+5. Añadir características adicionales (personalización, más opciones de visualización)
+
+## Contribuciones
+
+Las contribuciones son bienvenidas. Por favor, sigue estos pasos:
+
+1. Haz fork del repositorio
+2. Crea una rama para tu característica (`git checkout -b feature/amazing-feature`)
+3. Haz commit de tus cambios (`git commit -m 'Add some amazing feature'`)
+4. Push a la rama (`git push origin feature/amazing-feature`)
+5. Abre un Pull Request
+
+## Registro de Cambios
 
 | Fecha | Módulo | Cambios | Autor |
 |-------|--------|---------|-------|
 | 27/03/2025 | Repositorio | Creación inicial y README | DoZ |
+| 27/03/2025 | piano_renderer.py | Implementación del renderizador de piano | DoZ |
+| 27/03/2025 | README.md | Actualización con especificaciones detalladas | DoZ |
