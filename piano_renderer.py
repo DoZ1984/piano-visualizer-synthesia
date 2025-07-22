@@ -284,3 +284,86 @@ class PianoRenderer:
                             # Dibujar la nota
                             pygame.draw.rect(screen, color, (key_position, y_pos - note_height, key_width, note_height))
                             pygame.draw.rect(screen, self.BLACK, (key_position, y_pos - note_height, key_width, note_height), 1)
+
+
+# Ejemplo de uso
+if __name__ == "__main__":
+    import pygame
+    import sys
+    
+    # Inicializar pygame
+    pygame.init()
+    
+    # Configuración de ventana
+    width, height = 1200, 800
+    screen = pygame.display.set_mode((width, height))
+    pygame.display.set_caption("Test Piano Renderer")
+    clock = pygame.time.Clock()
+    
+    # Crear renderer
+    renderer = PianoRenderer(width, height)
+    
+    # Crear algunas notas de ejemplo
+    from midi_parser import Note
+    
+    test_notes = [
+        Note(60, 100, 0, 2000, 0, 'right', 0),    # C4
+        Note(64, 80, 500, 2500, 0, 'right', 0),   # E4
+        Note(67, 90, 1000, 3000, 0, 'right', 0),  # G4
+        Note(48, 100, 1500, 3500, 1, 'left', 1),  # C3
+        Note(52, 85, 2000, 4000, 1, 'left', 1),   # E3
+    ]
+    
+    # Variables de control
+    current_time = 0
+    speed = 1.0
+    show_hands = True
+    
+    # Loop principal
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    current_time = 0  # Reiniciar
+                elif event.key == pygame.K_h:
+                    show_hands = not show_hands  # Toggle manos
+                elif event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:
+                    speed = min(3.0, speed + 0.1)  # Aumentar velocidad
+                elif event.key == pygame.K_MINUS:
+                    speed = max(0.1, speed - 0.1)  # Disminuir velocidad
+        
+        # Actualizar tiempo
+        current_time += clock.get_time() * speed
+        
+        # Limpiar pantalla
+        screen.fill((40, 40, 40))
+        
+        # Dibujar piano y notas
+        renderer.draw(screen, test_notes, current_time, speed, show_hands)
+        
+        # Dibujar información
+        font = pygame.font.Font(None, 36)
+        info_text = f"Tiempo: {current_time/1000:.1f}s | Velocidad: {speed:.1f}x | Manos: {'ON' if show_hands else 'OFF'}"
+        text_surface = font.render(info_text, True, (255, 255, 255))
+        screen.blit(text_surface, (10, 10))
+        
+        instructions = [
+            "ESPACIO - Reiniciar",
+            "H - Toggle manos",
+            "+/- - Velocidad",
+            "Usa el teclado para tocar: Z,X,C,V,B,N,M..."
+        ]
+        
+        for i, instruction in enumerate(instructions):
+            text_surface = pygame.font.Font(None, 24).render(instruction, True, (200, 200, 200))
+            screen.blit(text_surface, (10, 50 + i * 25))
+        
+        # Actualizar pantalla
+        pygame.display.flip()
+        clock.tick(60)
+    
+    pygame.quit()
+    sys.exit()
